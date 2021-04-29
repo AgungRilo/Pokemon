@@ -8,13 +8,25 @@ const pokemon = (state = defaultState, action) => {
             console.log("datanya : ", action.payload);
             let newData = {
                 name: action.payload.name,
-                image: action.payload.img
+                image: action.payload.img,
+                abilities: action.payload.abilities,
+                types:action.payload.types,
+                moves:action.payload.moves
             }
             console.log("pokemon",state)
             return {
                 ...state,
                 pokeon : [...state.pokeon, newData]
             }
+        case "DELETE_POKEMON":
+        console.log("DELETE DELETE");
+        let dataPokemon = state.pokeon
+            dataPokemon.splice(action.payload.index, 1);
+            console.log("cek ini",dataPokemon);
+        return {
+            ...state,
+            pokeon: dataPokemon
+        }
 
         default:
             return state

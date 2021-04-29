@@ -5,6 +5,11 @@ import pokemon from '../asset/pokemon.png';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { Button, Alert, Input  } from 'antd';
+import swal from 'sweetalert'
+import {  Space, Upload, Popconfirm } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
+import { EditOutlined } from '@ant-design/icons';
 
 class Detail extends Component {
     constructor(props) {
@@ -15,11 +20,13 @@ class Detail extends Component {
             img: "",
             types: [],
             abilities: [],
-            moves: []
+            moves: [],
+            edit:true,
+            hidden:false,
         }
     }
 
-    componentDidMount() {
+     componentDidMount() {
         if (this.props.match.params.name) {
             axios.get(`https://pokeapi.co/api/v2/pokemon/${this.props.match.params.name}`)
                 .then(res => {
@@ -44,8 +51,32 @@ class Detail extends Component {
         this.props.savePokemon(obj)
     }
 
+    editPoke(){
+        this.setState({
+            edit:false,
+            hidden:true
+        })
+    }
+    cancelPoke(){
+        this.setState({
+            edit:true,
+            hidden:false
+        })
+    }
+
+    kondisi(name){
+        let cek = this.props.dataNamaPoke.find(a => a.name === this.props.match.params.name)
+        if (cek) {
+            return true
+        }else{
+            return false
+        }
+    }
+
     render() {
-        console.log(this.props.dataPokemon);
+        // console.log("data redux pokemon 1",this.props.dataPokemon);
+        // console.log("data redux pokemon 2",this.props.dataNamaPoke);
+console.log("edit",this.state.edit);
         return (
             <>
                 <Layout>
@@ -68,7 +99,34 @@ class Detail extends Component {
 
                         <Content style={{ width: "100%", height: "100%" }}>
                             <img src={this.state.img} alt="pokemon" width="130" height="100" style={{ marginTop: "0vh" }} />
-                            <h1>{this.state.name}</h1>
+                            {
+                                this.kondisi() ? 
+                                    this.props.dataNamaPoke.filter(a => a.name === this.props.match.params.name).map((poke, idx) =>
+                                        <div key={idx}>
+                                            <Space>
+                                            <h1 hidden={this.state.hidden} >{poke.name}</h1>
+                                            <EditOutlined hidden={this.state.hidden} onClick={()=>{this.editPoke()}} style={{ fontSize: '15px' }}/>
+                                            <Input  hidden={this.state.edit} placeholder="Pokemon Name" /><Button hidden={this.state.edit} >Save</Button><Button hidden={this.state.edit} onClick={()=>{this.cancelPoke()}}>Cancel</Button>
+                                            
+                                            </Space>
+                                            {/* <div style={{textAlign:"center"}}>
+                                                
+
+                                                <div style={{float:"center"}}>
+                                                    <h1 >{poke.name}</h1>
+                                                    
+                                                </div>
+                                                    <div style={{float:"right"}} >
+                                                        <EditOutlined style={{ fontSize: '30px' }}/>
+                                                    </div>
+                                                
+                                                
+                                            </div> */}
+                                        </div>
+                                    )
+                                :
+                                <h1>{this.state.name}</h1>
+                            }
                                 <button onClick={()=>{this.savePoke()}} style={{cursor:"pointer"}}>Catch Pokemon</button>
                             <h1>
                                 Type
@@ -100,53 +158,13 @@ class Detail extends Component {
                                             <span className="ant-typography">{poke.move.name}</span>
                                         </div>
                                         )}
-                                        {/* <div className="ant-col ant-col-12">
-                                            <span className="ant-typography">razor-wind</span>
-                                        </div>
-                                        <div className="ant-col ant-col-12">
-                                            <span className="ant-typography">razor-wind</span>
-                                        </div>
-                                        <div className="ant-col ant-col-12">
-                                            <span className="ant-typography">razor-wind</span>
-                                        </div>
-                                        <div className="ant-col ant-col-12">
-                                            <span className="ant-typography">razor-wind</span>
-                                        </div>
-                                        <div className="ant-col ant-col-12">
-                                            <span className="ant-typography">razor-wind</span>
-                                        </div> */}
+                                        
                                         
                                     </div>
                                     </div>
                             </div>
 
-                            {/* <h1>
-                                Moves
-                            </h1>
-                            <div className="ant-row" style={{ rowGap: 0 }}>
-                                {this.state.moves.map((poke, idx) =>
-                                    <div key={idx}>
-                                        <div className="ant-col ant-col-12">
-                                            <span className="ant-typography">{poke.move.name}</span>
-                                        </div>
-                                    </div>
-
-                                )}
-
-
-                            </div> */}
-                            {/* <div style={{display: "flex",marginLeft:"10vw", flexWrap: "wrap", justifyContent:"space-evenly", width:"85vw"}}> */}
-
-                            {/* <div style={{marginRight:"30vw"}}>razor-wind</div>
-                            <div style={{marginRight:"30vw"}}>swords-dance</div>
-                            <div style={{marginRight:"30vw"}}>cut</div>
-                            <div style={{marginRight:"30vw"}}>bind</div>
-                            <div style={{marginRight:"30vw"}}>vine-whip</div>
-                            <div style={{marginRight:"30vw"}}>headbutt</div> */}
-
-
-
-                            {/* </div> */}
+                            
 
                         </Content>
                     </center>
@@ -160,7 +178,8 @@ class Detail extends Component {
 
 //ketika mengambil data dari luar kelas
 const mapStateToProps = state => ({
-    dataPokemon: state.Poke
+    dataPokemon: state.Poke,
+    dataNamaPoke: state.Poke.pokeon
 
 })
 //mengubah data kereducer

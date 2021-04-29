@@ -105,7 +105,6 @@ class Get extends Component {
             name: detail.name,
             img: detail.img
         })
-        // return detail
 
     }
 
@@ -116,8 +115,22 @@ class Get extends Component {
         // console.log(object);
         return (
             <Layout>
-                    <Header style={{ backgroundColor: "white" }}>
-                        <img src={pokemon} alt="pokemon"  width="130" height="110"/>
+                    <Header className="border-shadow" style={{ backgroundColor: "white", display: "flex", flexDirection: "row" }}>
+                        <Link to="/">
+                            <div>
+                                <img src={pokemon} alt="pokemon" width="130" height="100" style={{ marginTop: "0vh" }} />
+                            </div>
+                        </Link>
+                        <Link to="/">
+                            <div style={{ marginLeft: "60vw", marginRight: "10vw" }}>
+                                <div style={{ textDecoration: "none", color: "black" }}>All Pokemon</div>
+                            </div>
+                        </Link>
+                        <Link to="/my-pokemon-list">
+                            <div>
+                                <div style={{ textDecoration: "none", color: "black" }} >My Pokemon</div>
+                            </div>
+                        </Link>
                     </Header>
                     <center>
                         <Content style={{ border: "none" }}>
@@ -127,8 +140,6 @@ class Get extends Component {
                                 {this.state.pokemon.map((pokemon, idx) =>
                                     <div key={idx}>
                                         <p></p>
-
-
                                         {/* <div style={{display:"flex", flexDirection:"row"}}> */}
                                         <Col className="gutter-row" span={19}>
                                             <Link to={`/pokemon-detail/${pokemon.name}`}>
